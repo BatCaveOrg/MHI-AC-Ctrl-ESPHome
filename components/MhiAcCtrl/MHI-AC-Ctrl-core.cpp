@@ -250,7 +250,10 @@ static byte MOSI_frame[33];
         digitalWrite(MISO_PIN, 1);
       else
         digitalWrite(MISO_PIN, 0);
-      while (!digitalRead(SCK_PIN)) {} // wait for rising edge
+      while (!digitalRead(SCK_PIN)) { // wait for rising edge
+        if (millis() - startMillis > max_time_ms)
+          return err_msg_timeout_SCK_low;       // SCK stuck@ low error detection
+      }
       if (digitalRead(MOSI_PIN))
         MOSI_byte += bit_mask;
       bit_mask = bit_mask << 1;
